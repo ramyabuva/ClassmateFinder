@@ -1,0 +1,87 @@
+<!--doctype html-->
+<html lang="en">
+<head>
+  {% include 'page-includes.html' %}
+</head>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<body>
+
+<div class="container blank-container">
+
+	<header class="website-header">
+     {% include 'header.html' %}
+  </header>
+
+      <main role="main">
+        <div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
+          <div class="col-sm-12 mx-auto">
+            <h3 class="text-primary m-0">Friends</h3>
+            <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
+            </p>
+
+             <!-- <p class="font-ninety-em d-lg-none mt-2 mb-0">Here is another description of our demo.</p> -->
+          </div>
+        </div>
+
+        <div class="container mb-4">
+
+          <div class="demo-control-panel mx-auto">
+            <div class="wrapper-upload-image-component"> 
+              <div id="upload-image-component" class="mx-auto mw-100 p-0 my-0 form-control-goodwidth">
+
+                <div class="spinner-border" id='loading-data-spinner'></div>
+
+                <div class="p-1 rounded rounded-lg bg-white shadow-sm border">
+                <div class="rounded rounded-lg bg-white border">
+                  
+                </div>
+                </div>
+
+                <div class="text-center">
+                  <div class="text-center box-height-25">
+                    <img src="static/images/loading-icon-3.gif" id="loading-box" class="d-none" height="12"/>
+                    <div class="flashes"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4 py-2 px-0 px-md-4" name="display-container" id="display-container">
+            <div class="demo-results-area col-12 border rounded-lg p-4" name="OSMURI-container" id="OSMURI-container">
+            </div>
+
+            <div class="text-smallest text-right text-muted col-12 p-1">
+            </div>
+
+            <div class="col-12 border rounded-lg p-4 text-smallest mt-4 text-muted">
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+
+</div>
+
+<footer class="page-footer">
+  {% include 'footer.html' %}
+</footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/finder.js"></script>
+    <!-- <script>$("#geoparsepy-spinner").hide();</script> -->
+</body>
+</html>
