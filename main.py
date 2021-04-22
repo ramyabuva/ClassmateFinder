@@ -12,11 +12,25 @@ from flask import render_template
 
 
 from pagination import Pagination
+import mysql.connector
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 
 app = Flask(__name__)
+
+
+
+cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+mycursor = cnx.cursor()
+
+# mycursor.execute("SELECT * FROM account")
+
+# myresult = mycursor.fetchall()
+
+# for x in myresult:
+#   print(x)
 
 @app.route('/', methods=['GET'])
 def main():
@@ -45,6 +59,14 @@ def friends():
 	# If the request is GET then only render template.
 	if request.method == "GET":
 		return render_template('friends.html')
+
+	return {}
+
+@app.route('/clubs', methods = ["GET", "POST"])
+def clubs():
+	# If the request is GET then only render template.
+	if request.method == "GET":
+		return render_template('clubs.html')
 
 	return {}
 

@@ -1,0 +1,100 @@
+<!--doctype html-->
+<html lang="en">
+<head>
+  {% include 'page-includes.html' %}
+</head>
+<style>
+table, th, td {
+  border: 1px solid black;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+<body>
+
+<div class="container blank-container">
+
+	<header class="website-header">
+     {% include 'header.html' %}
+  </header>
+
+      <main role="main">
+        <div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
+          <div class="col-sm-12 mx-auto">
+            <h3 class="text-primary m-0">Clubs</h3>
+            <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
+            </p>
+
+             <!-- <p class="font-ninety-em d-lg-none mt-2 mb-0">Here is another description of our demo.</p> -->
+          </div>
+        </div>
+
+        <div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">Your Clubs</h4>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    AOE
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
+                    <p style="color:gray">Mutual Friends: </p>
+                  </li>
+                  <li class="list-group-item">
+                    ACM
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
+                  </li>
+                  <li class="list-group-item">
+                    WiCS
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
+                  </li>
+                </ul>
+            </div>
+
+            <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Add Clubs: </h4>
+                <form>
+                  <div class="form-group">
+                    <label for="friend-search">Search</label>
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by club name">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by friend name"> <!-- could be a dropdown-->
+                  </div>
+                </form>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    ACM
+                    <button type="button" class="btn btn-primary float-right">Add Club</button>
+                    <p style="color:gray">Mutual Friends: </p>
+                  </li>
+                  <li class="list-group-item">
+                    A Capella
+                    <button type="button" class="btn btn-primary float-right">Add Club</button>
+                  </li>
+                  <li class="list-group-item">
+                    Waffle Club
+                    <button type="button" class="btn btn-primary float-right">Add Club</button>
+                  </li>
+                </ul>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+</div>
+
+<footer class="page-footer">
+  {% include 'footer.html' %}
+</footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/finder.js"></script>
+    <!-- <script>$("#geoparsepy-spinner").hide();</script> -->
+</body>
+</html>

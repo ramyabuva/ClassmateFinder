@@ -13,6 +13,7 @@ conda create -n dbproj python=3.7    # Create a virtual environment
 source activate dbproj         	    # Activate virtual environment
 pip install flask
 pip install requests
+pip intall mysql-connector-python
 ```
 
 ## Running the website

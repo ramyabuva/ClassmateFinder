@@ -32,38 +32,73 @@ table.center {
         </div>
 
         <div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">Your Friends</h4>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Friend</button>
+                    <br>
+                    <p style="color:gray">rsb4zm  - Computer Science
+                    <br>
+                    Mutual Courses: 
+                    <br>
+                    Mutual Clubs:
+                    </p>
+                  </li>
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Friend</button>
+                    <br>
+                    <p style="color:gray">rsb4zm  - Computer Science</p>
+                  </li>
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Friend</button>
+                    <br>
+                    <p style="color:gray">rsb4zm  - Computer Science</p>
+                  </li>
+                </ul>
+            </div>
 
-          <div class="demo-control-panel mx-auto">
-            <div class="wrapper-upload-image-component"> 
-              <div id="upload-image-component" class="mx-auto mw-100 p-0 my-0 form-control-goodwidth">
-
-                <div class="spinner-border" id='loading-data-spinner'></div>
-
-                <div class="p-1 rounded rounded-lg bg-white shadow-sm border">
-                <div class="rounded rounded-lg bg-white border">
-                  
-                </div>
-                </div>
-
-                <div class="text-center">
-                  <div class="text-center box-height-25">
-                    <img src="static/images/loading-icon-3.gif" id="loading-box" class="d-none" height="12"/>
-                    <div class="flashes"></div>
+            <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Add Friends: </h4>
+                <form>
+                  <div class="form-group">
+                    <label for="friend-search">Search</label>
+                    <input type="text" class="form-control" id="friend-search-cid" placeholder="Search by computing IDs">
                   </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <div class="row mb-4 py-2 px-0 px-md-4" name="display-container" id="display-container">
-            <div class="demo-results-area col-12 border rounded-lg p-4" name="OSMURI-container" id="OSMURI-container">
-            </div>
-
-            <div class="text-smallest text-right text-muted col-12 p-1">
-            </div>
-
-            <div class="col-12 border rounded-lg p-4 text-smallest mt-4 text-muted">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search-name" placeholder="Search by name">
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search-name" placeholder="Search by major">
+                  </div>
+                  <!-- could be a dropdown-->
+                </form>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
+                    <p style="color:gray">rsb4zm  - Computer Science
+                      <br>
+                    Mutual Courses: 
+                    <br>
+                    Mutual Clubs:
+                    </p>
+                  </li>
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
+                    <p style="color:gray">rsb4zm  - Computer Science</p>
+                  </li>
+                  <li class="list-group-item">
+                    Ramya Bhaskara
+                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
+                    <p style="color:gray">rsb4zm  - Computer Science</p>
+                  </li>
+                </ul>
             </div>
 
           </div>

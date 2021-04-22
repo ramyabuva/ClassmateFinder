@@ -16,14 +16,14 @@ table.center {
 
 <div class="container blank-container">
 
-	<header class="website-header">
+  <header class="website-header">
      {% include 'header.html' %}
   </header>
 
       <main role="main">
         <div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
           <div class="col-sm-12 mx-auto">
-            <h3 class="text-primary m-0">Classmate Finder</h3>
+            <h3 class="text-primary m-0">Courses</h3>
             <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
             </p>
 
@@ -32,40 +32,70 @@ table.center {
         </div>
 
         <div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">Your Courses</h4>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    CS 4750: Databases 
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
+                    <p style="color:gray">Semester, Year, Days, Times
+                      <br>
+                    Mutual Friends: </p>
+                  </li>
+                  <!-- Grey out waitlist classes? -->
+                  <li class="list-group-item">
+                    CS 4750: Databases 
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
+                    <p style="color:gray">Semester, Year, Days, Times
+                      <br>
+                    Mutual Friends: </p>
+                  </li>
+                  <li class="list-group-item">
+                    CS 4750: Databases 
+                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
+                    <p style="color:gray">Semester, Year, Days, Times
+                      <br>
+                    Mutual Friends: </p>
+                  </li>
+                </ul>
+            </div>
 
-          <div class="demo-control-panel mx-auto">
-            <div class="wrapper-upload-image-component"> 
-              <div id="upload-image-component" class="mx-auto mw-100 p-0 my-0 form-control-goodwidth">
-
-                <div class="spinner-border" id='loading-data-spinner'></div>
-
-                <div class="p-1 rounded rounded-lg bg-white shadow-sm border">
-                <div class="rounded rounded-lg bg-white border">
-                  
-                </div>
-                </div>
-
-                <div class="text-center">
-                  <div class="text-center box-height-25">
-                    <img src="static/images/loading-icon-3.gif" id="loading-box" class="d-none" height="12"/>
-                    <div class="flashes"></div>
+            <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Add Course: </h4>
+                <form>
+                  <div class="form-group">
+                    <label for="friend-search">Search</label>
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by course name">
                   </div>
-                </div>
-
-              </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by friend name"> <!-- could be a dropdown-->
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by semester">
+                    <!-- could be a dropdown-->
+                  </div>
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="friend-search" placeholder="Search by year"> <!-- could be a dropdown-->
+                  </div>
+                  <!-- add additional filters-->
+                </form>
+                <ul class="list-group" >
+                  <li class="list-group-item">
+                    CS 2150: Data Structures
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="on-waitlist">
+                      <label class="form-check-label" for="flexCheckChecked">
+                        Waitlist
+                      </label>
+                    </div>
+                    <button type="button" class="btn btn-primary float-right">Add Course</button>
+                    <p style="color:gray">Semester, Year, Days, Times
+                      <br>
+                    Mutual Friends: </p>
+                  </li>
+                </ul>
             </div>
-          </div>
-
-          <div class="row mb-4 py-2 px-0 px-md-4" name="display-container" id="display-container">
-            <div class="demo-results-area col-12 border rounded-lg p-4" name="OSMURI-container" id="OSMURI-container">
-            </div>
-
-            <div class="text-smallest text-right text-muted col-12 p-1">
-            </div>
-
-            <div class="col-12 border rounded-lg p-4 text-smallest mt-4 text-muted">
-            </div>
-
           </div>
 
         </div>
