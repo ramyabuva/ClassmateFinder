@@ -22,19 +22,17 @@ import hashlib
 app = Flask(__name__)
 app.secret_key = 'randomstring'
 
-
-# mycursor.execute("SELECT * FROM account")
-
-# myresult = mycursor.fetchall()
-
-# for x in myresult:
-#   print(x)
-
 @app.route('/', methods=['GET'])
 def main():
 	if 'user' in session:
-		return render_template('profile.html')
+		return redirect('/profile')
 	return render_template('login.html')
+
+@app.route('/profile', methods=['GET'])
+def profile():
+	if 'user' in session:
+		return render_template('profile.html')
+	return redirect('/')
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -52,11 +50,10 @@ def login():
 		mycursor.execute(query)
 		myresult = mycursor.fetchall()
 		cnx.close()
-		if len(myresult) != 0 and myresult[0][5] == request.form['password']:
+		if len(myresult) > 0 and myresult[0][5] == request.form['password']:
 			session['user'] = request.form['cid-login'].lower()
-			return render_template('profile.html') 
-		return render_template('login.html') # TODO: figure out message for incorrect username/password
-	return render_template('login.html')
+			return redirect('/profile')
+	return redirect('/') # TODO: figure out message for incorrect username/password
 
 
 @app.route('/register', methods=['POST'])
@@ -74,12 +71,11 @@ def register():
 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 	mycursor = cnx.cursor()
-	# TODO: figure out why insertion isn't working
 	query = "INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES " + vals
 	mycursor.execute(query)
 	cnx.commit()
 	cnx.close()
-	return render_template('profile.html')
+	return redirect('/profile')
 ####################################################
 
 # *****************************
