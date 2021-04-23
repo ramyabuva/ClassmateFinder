@@ -50,7 +50,7 @@ def login():
 		mycursor.execute(query)
 		myresult = mycursor.fetchall()
 		cnx.close()
-		if len(myresult) > 0 and myresult[0][5] == request.form['password']:
+		if len(myresult) > 0 and myresult[0][5] == encode_password(request.form['password']):
 			session['user'] = request.form['cid-login'].lower()
 			return redirect('/profile')
 	return redirect('/') # TODO: figure out message for incorrect username/password
@@ -59,23 +59,25 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
 	session['user'] = request.form['cid'].lower()
-	vals = "('{cid}', '{fname}',{gradyear},'{lname}','{major}','{pwd}')".format(
+	vals = "('{cid}', '{fname}',{gradyear},'{lname}','{major}', %(pwd)s)".format(
 		cid = request.form['cid'].lower(),
 		fname = request.form['firstname'],
 		gradyear = request.form['grad-year'],
 		lname = request.form['lastname'],
 		major = request.form['major'],
-		# TODO: hash passwords and store them in database
-		pwd = request.form['password'] #hashlib.pbkdf2_hmac('sha256', request.form['password'].encode('utf-8'), bytes([32]), 100000)
 		)
 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 	mycursor = cnx.cursor()
 	query = "INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES " + vals
-	mycursor.execute(query)
+	mycursor.execute(query, { 'pwd': encode_password(request.form['password']) })
 	cnx.commit()
 	cnx.close()
 	return redirect('/profile')
+
+def encode_password(pwd):
+	return hashlib.pbkdf2_hmac('sha256', pwd.encode('utf-8'), bytes([32]), 100000)
+
 ####################################################
 
 # *****************************
