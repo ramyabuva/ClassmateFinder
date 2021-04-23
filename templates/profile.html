@@ -27,17 +27,17 @@
           <div class="row mb-4 py-2 px-0 px-md-4">
             <div class="col-12 border rounded-lg p-4" id="friends" name="friends">
                 <h4 class="text-primary m-0">{{ comp_id }}</h4>
-                <form action="/login" method="POST">
+                <form action="/profile" method="POST" id="updateinfo" name="updateinfo">
                   <div class="form-group">
-                    <label for="cid-login">First Name</label>
+                    <label for="firstname">First Name</label>
                     <input type="text" class="form-control" id="firstname" name="firstname" value={{ fname }} disabled>
                   </div>
                   <div class="form-group">
-                    <label for="cid-login">Last Name</label>
+                    <label for="lastname">Last Name</label>
                     <input type="text" class="form-control" id="lastname" name="lastname" value={{ lname }} disabled>
                   </div>
                   <div class="form-group">
-                    <label for="cid-login">Graduation Year</label>
+                    <label for="gradyear">Graduation Year</label>
                     <select class="form-control " id="gradyear" name="gradyear" disabled>
 					  <option value={{ gradyear }} selected >{{ gradyear }}</option>
 					  <option value=2021 >2021</option>
@@ -48,15 +48,19 @@
 					</select>
                   </div>
                   <div class="form-group">
-                    <label for="cid-login">Primary Major</label>
+                    <label for="major">Primary Major</label>
                     <select class="form-control " id="major" name="major" disabled>
 					  <option value={{ major }} selected >{{ major }}</option>
 					  <option value="Computer Science">Computer Science</option>
-					  <option value="Computer Engineerinng">Computer Engineering</option>
+					  <option value="Computer Engineering">Computer Engineering</option>
 					  <option value="Electrical Engineering">Electrical Engineering</option>
 					  <option value="Systems Engineering">Systems Engineering</option>
 					</select>
                   </div>
+
+                <button type="button" id="edit" name="edit" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Edit</button>
+                <button type="button" id="savechanges" name="savechanges" class="btn btn-primary float-right" hidden>Save Changes</button>
+
                 </form>
             </div>
 
@@ -73,6 +77,7 @@
 <!-- jQuery first, then Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/finder.js"></script>
 
 </body>
 </html>

@@ -29,7 +29,7 @@ def main():
 		return redirect('/profile')
 	return render_template('login.html')
 
-@app.route('/profile', methods=['GET'])
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
 	if 'user' in session:
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
@@ -43,6 +43,25 @@ def profile():
 			return render_template('profile.html', comp_id = session['user'], 
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
+
+@app.route('/update', methods=['GET', 'POST'])
+def update():
+	print(request.form)
+	if 'user' in session:
+		query = "UPDATE `User` SET `first_name` = '{fname}', `last_name` = '{lname}', `graduation_year` = '{gradyear}', `major` = '{major}' WHERE `User`.`comp_id` = '{cid}'".format(
+			cid = session['user'],
+			fname = request.form['firstname'],
+			gradyear = request.form['gradyear'],
+			lname = request.form['lastname'],
+			major = request.form['major']
+			)
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute(query)
+		cnx.commit()
+		cnx.close()
+	return redirect('/profile')
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
