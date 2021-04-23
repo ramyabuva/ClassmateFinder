@@ -1,0 +1,91 @@
+<!--doctype html-->
+<html lang="en">
+<head>
+  {% include 'page-includes.html' %}
+</head>
+
+<body>
+<div class="container blank-container">
+
+	<header class="website-header">
+     {% include 'header.html' %}
+  </header>
+  
+</div>
+
+<main role="main" class="container blank-container">
+	<div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
+          <div class="col-sm-12 mx-auto">
+            <h3 class="text-primary m-0">Login or Register</h3>
+            <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
+            </p>
+
+             <!-- <p class="font-ninety-em d-lg-none mt-2 mb-0">Here is another description of our demo.</p> -->
+          </div>
+        </div>
+
+        <div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">Login</h4>
+                <form action="/login" method="POST">
+                  <div class="form-group">
+                    <label for="cid-login">Computing Id</label>
+                    <input type="text" class="form-control" id="cid-login" name="cid-login" placeholder="Computing ID" required>
+                  </div>
+                  <div class="form-group">
+                  	<label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+
+            <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Register: </h4>
+                <form action="/register" method="POST">
+                  <div class="form-group">
+                    <label for="cid-login">Computing Id</label>
+                    <input type="text" class="form-control" id="cid-signup" name="cid" placeholder="Computing ID" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">First Name</label>
+                    <input type="text" class="form-control" id="firstname-signup" name="firstname" placeholder="First Name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Last Name</label>
+                    <input type="text" class="form-control" id="lastname-signup" name="lastname" placeholder="Last Name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Year</label>
+                    <input type="text" class="form-control" id="lastname-signup" name="grad-year" placeholder="Graduation Year" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Major</label>
+                    <input type="text" class="form-control" id="lastname-signup" name="major" placeholder="Major" required>
+                  </div>
+                  <div class="form-group">
+                  	<label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" minlength="5"required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Register</button>
+                </form>
+                
+            </div>
+
+          </div>
+
+        </div>
+</main><!-- /.container -->
+
+<footer class="page-footer">
+  {% include 'footer.html' %}
+</footer>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
+
+</body>
+</html>
