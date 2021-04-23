@@ -57,12 +57,23 @@
                     <input type="text" class="form-control" id="lastname-signup" name="lastname" placeholder="Last Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="cid-login">Year</label>
-                    <input type="text" class="form-control" id="lastname-signup" name="grad-year" placeholder="Graduation Year" required>
+                    <label for="cid-login">Graduation Year</label>
+                    <select class="form-control " id="grad-year" name="grad-year" required>
+                      <option value=2021>2021</option>
+                      <option value=2022>2022</option>
+                      <option value=2023>2023</option>
+                      <option value=2024>2024</option>
+                      <option value=2025>2025</option>
+                    </select>
                   </div>
                   <div class="form-group">
-                    <label for="cid-login">Major</label>
-                    <input type="text" class="form-control" id="lastname-signup" name="major" placeholder="Major" required>
+                    <label for="cid-login">Primary Major</label>
+                    <select class="form-control " id="major" name="major" required>
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Computer Engineerinng">Computer Engineering</option>
+                      <option value="Electrical Engineering">Electrical Engineering</option>
+                      <option value="Systems Engineering">Systems Engineering</option>
+                    </select>
                   </div>
                   <div class="form-group">
                   	<label for="password">Password</label>

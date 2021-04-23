@@ -14,8 +14,55 @@
 </div>
 
 <main role="main" class="container blank-container">
-	My Profile
+		<div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
+          <div class="col-sm-12 mx-auto">
+            <h3 class="text-primary m-0">My Profile</h3>
+            <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
+            </p>
 
+             <!-- <p class="font-ninety-em d-lg-none mt-2 mb-0">Here is another description of our demo.</p> -->
+          </div>
+    	</div>
+    	<div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-12 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">{{ comp_id }}</h4>
+                <form action="/login" method="POST">
+                  <div class="form-group">
+                    <label for="cid-login">First Name</label>
+                    <input type="text" class="form-control" id="firstname" name="firstname" value={{ fname }} disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Last Name</label>
+                    <input type="text" class="form-control" id="lastname" name="lastname" value={{ lname }} disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Graduation Year</label>
+                    <select class="form-control " id="gradyear" name="gradyear" disabled>
+					  <option value={{ gradyear }} selected >{{ gradyear }}</option>
+					  <option value=2021 >2021</option>
+					  <option value=2022>2022</option>
+					  <option value=2023>2023</option>
+					  <option value=2024>2024</option>
+					  <option value=2025>2025</option>
+					</select>
+                  </div>
+                  <div class="form-group">
+                    <label for="cid-login">Primary Major</label>
+                    <select class="form-control " id="major" name="major" disabled>
+					  <option value={{ major }} selected >{{ major }}</option>
+					  <option value="Computer Science">Computer Science</option>
+					  <option value="Computer Engineerinng">Computer Engineering</option>
+					  <option value="Electrical Engineering">Electrical Engineering</option>
+					  <option value="Systems Engineering">Systems Engineering</option>
+					</select>
+                  </div>
+                </form>
+            </div>
+
+          </div>
+
+        </div>
 </main><!-- /.container -->
 
 <footer class="page-footer">

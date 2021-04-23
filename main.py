@@ -22,6 +22,7 @@ import hashlib
 app = Flask(__name__)
 app.secret_key = 'randomstring'
 
+
 @app.route('/', methods=['GET'])
 def main():
 	if 'user' in session:
@@ -31,10 +32,19 @@ def main():
 @app.route('/profile', methods=['GET'])
 def profile():
 	if 'user' in session:
-		return render_template('profile.html')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		query = "SELECT * FROM User WHERE comp_id = '{cid}'".format(cid = session['user'])
+		mycursor.execute(query)
+		myresult = mycursor.fetchall()
+		cnx.close()
+		if len(myresult) > 0:
+			return render_template('profile.html', comp_id = session['user'], 
+				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
 
-@app.route('/logout', methods=['GET'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
 	if 'user' in session:
 		session.pop('user', None)
@@ -77,16 +87,6 @@ def register():
 
 def encode_password(pwd):
 	return hashlib.pbkdf2_hmac('sha256', pwd.encode('utf-8'), bytes([32]), 100000)
-
-####################################################
-
-# *****************************
-# Load model stuff here
-# *****************************
-
-####################################################
-import os, sys, logging, traceback, codecs, datetime, copy, time, ast, math, re, random, shutil, json
-
 
 @app.route('/classmatefinder', methods = ["GET", "POST"])
 def classmatefinder(): 
