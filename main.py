@@ -97,7 +97,12 @@ def register():
 		)
 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+	query = "SELECT * FROM User WHERE comp_id = '{cid}'".format(cid = request.form['cid-login'].lower())
 	mycursor = cnx.cursor()
+	mycursor.execute(query)
+	myresult = mycursor.fetchall()
+	if len(myresult) > 0:
+		return redirect('/')
 	query = "INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES " + vals
 	mycursor.execute(query, { 'pwd': encode_password(request.form['password']) })
 	cnx.commit()
