@@ -35,8 +35,7 @@ def profile():
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
-		query = "SELECT * FROM User WHERE comp_id = '{cid}'".format(cid = session['user'])
-		mycursor.execute(query)
+		mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {'cid': session['user']})
 		myresult = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0:
@@ -48,17 +47,17 @@ def profile():
 def update():
 	print(request.form)
 	if 'user' in session:
-		query = "UPDATE `User` SET `first_name` = '{fname}', `last_name` = '{lname}', `graduation_year` = '{gradyear}', `major` = '{major}' WHERE `User`.`comp_id` = '{cid}'".format(
-			cid = session['user'],
-			fname = request.form['firstname'],
-			gradyear = request.form['gradyear'],
-			lname = request.form['lastname'],
-			major = request.form['major']
-			)
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
 	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
-		mycursor.execute(query)
+		mycursor.execute("UPDATE `User` SET `first_name` = %(fname)s, `last_name` = %(lname)s, `graduation_year` = %(gradyear)s, `major` = %(major)s WHERE `User`.`comp_id` = %(cid)s",
+			{
+			'cid' : session['user'],
+			'fname' : request.form['firstname'],
+			'gradyear' : int(request.form['gradyear']),
+			'lname' : request.form['lastname'],
+			'major' : request.form['major']
+			})
 		cnx.commit()
 		cnx.close()
 	return redirect('/profile')
@@ -75,8 +74,7 @@ def login():
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
-		query = "SELECT * FROM User WHERE comp_id = '{cid}'".format(cid = request.form['cid-login'].lower())
-		mycursor.execute(query)
+		mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {'cid': request.form['cid-login'].lower()})
 		myresult = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0 and myresult[0][5] == encode_password(request.form['password']):
@@ -87,24 +85,22 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
-	session['user'] = request.form['cid'].lower()
-	vals = "('{cid}', '{fname}',{gradyear},'{lname}','{major}', %(pwd)s)".format(
-		cid = request.form['cid'].lower(),
-		fname = request.form['firstname'],
-		gradyear = request.form['grad-year'],
-		lname = request.form['lastname'],
-		major = request.form['major'],
-		)
 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
                               database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
-	query = "SELECT * FROM User WHERE comp_id = '{cid}'".format(cid = request.form['cid-login'].lower())
 	mycursor = cnx.cursor()
-	mycursor.execute(query)
+	mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {"cid": request.form['cid'].lower()})
 	myresult = mycursor.fetchall()
 	if len(myresult) > 0:
 		return redirect('/')
-	query = "INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES " + vals
-	mycursor.execute(query, { 'pwd': encode_password(request.form['password']) })
+	session['user'] = request.form['cid'].lower()
+	mycursor.execute("INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES (%(cid)s, %(fname)s,%(gradyear)s,%(lname)s,%(major)s, %(pwd)s)",
+	 {  'pwd': encode_password(request.form['password']) ,
+	 	'cid' : request.form['cid'].lower(),
+		'fname' :request.form['firstname'],
+		'gradyear': int(request.form['grad-year']),
+		'lname' : request.form['lastname'],
+		'major': request.form['major'],
+	 })
 	cnx.commit()
 	cnx.close()
 	return redirect('/profile')
