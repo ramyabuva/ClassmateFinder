@@ -13,6 +13,7 @@ from flask import render_template
 
 from pagination import Pagination
 import mysql.connector
+import numpy as np
 
 import hashlib
 
@@ -53,18 +54,23 @@ def friendlist():
 			mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major, course_id, dept,course_number FROM (SELECT comp_id, course_id FROM (SELECT DISTINCT comp_id_friend as comp_id FROM Friends_With WHERE comp_id_user = %(cid)s) as F NATURAL LEFT JOIN Is_Taking) as mutuals NATURAL LEFT JOIN Course NATURAL JOIN User",
 				{"cid": session['user']})
 			friends = mycursor.fetchall()
+			mycursor.execute("SELECT course_id FROM Is_Taking WHERE comp_id = %(cid)s", {"cid": session['user']})
+			mycourses = mycursor.fetchall()
 			cnx.close()
+			mycourses = np.array(mycourses).flatten()
 			toRet = {}
+
 			for mutualclass in friends:
 				if toRet.get(mutualclass[0], False):
-					toRet[mutualclass[0]]['classes'].append(str(mutualclass[6]) + str(mutualclass[7]))
+					if mutualclass[5] in mycourses:
+						toRet[mutualclass[0]]['classes'].append(str(mutualclass[6]) + str(mutualclass[7]) +  "(" + str(mutualclass[5]) + ")" )
 				else:
 					toRet[mutualclass[0]] = {}
 					toRet[mutualclass[0]]['name'] = mutualclass[1] + " " + mutualclass[2]
 					toRet[mutualclass[0]]['gradyear'] = mutualclass[3]
 					toRet[mutualclass[0]]['major'] = mutualclass[4]
-					if str(mutualclass[6]) != "None":
-						toRet[mutualclass[0]]['classes'] = [str(mutualclass[6]) + str(mutualclass[7])]
+					if str(mutualclass[5]) != "None" and mutualclass[5] in mycourses:
+						toRet[mutualclass[0]]['classes'] = [str(mutualclass[6]) + str(mutualclass[7]) + "(" + str(mutualclass[5]) + ")" ]
 					else:
 						toRet[mutualclass[0]]['classes'] = ["None"]
 			return toRet
