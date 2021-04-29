@@ -43,6 +43,38 @@ def profile():
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
 
+@app.route('/friend-list', methods=['GET', 'POST'])
+def friendlist():
+	if request.method == "GET":
+		if 'user' in session:
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			mycursor = cnx.cursor()
+			mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major, course_id, dept,course_number FROM (SELECT comp_id, course_id FROM (SELECT DISTINCT comp_id_friend as comp_id FROM Friends_With WHERE comp_id_user = %(cid)s) as F NATURAL LEFT JOIN Is_Taking) as mutuals NATURAL LEFT JOIN Course NATURAL JOIN User",
+				{"cid": session['user']})
+			friends = mycursor.fetchall()
+			cnx.close()
+			toRet = {}
+			for mutualclass in friends:
+				if toRet.get(mutualclass[0], False):
+					toRet[mutualclass[0]]['classes'].append(str(mutualclass[6]) + str(mutualclass[7]))
+				else:
+					toRet[mutualclass[0]] = {}
+					toRet[mutualclass[0]]['name'] = mutualclass[1] + " " + mutualclass[2]
+					toRet[mutualclass[0]]['gradyear'] = mutualclass[3]
+					toRet[mutualclass[0]]['major'] = mutualclass[4]
+					if str(mutualclass[6]) != "None":
+						toRet[mutualclass[0]]['classes'] = [str(mutualclass[6]) + str(mutualclass[7])]
+					else:
+						toRet[mutualclass[0]]['classes'] = ["None"]
+			return toRet
+
+@app.route('/remove-friend', methods=[ 'POST'])
+def removeFriend(): #TODO: implement removal from Friends_With table
+	print(request.form)
+	return {}
+
+
 @app.route('/update', methods=['GET', 'POST'])
 def update():
 	print(request.form)
