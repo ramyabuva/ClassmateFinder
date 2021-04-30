@@ -16,18 +16,16 @@
 <main role="main" class="container blank-container">
 		<div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
           <div class="col-sm-12 mx-auto">
-            <h3 class="text-primary m-0">My Profile</h3>
+            <h3 class="text-primary m-0">{{ fname }} {{ lname }}'s Profile</h3>
             <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
             </p>
-
-             <!-- <p class="font-ninety-em d-lg-none mt-2 mb-0">Here is another description of our demo.</p> -->
           </div>
     	</div>
     	<div class="container mb-4">
           <div class="row mb-4 py-2 px-0 px-md-4">
             <div class="col-12 border rounded-lg p-4" id="friends" name="friends">
                 <h4 class="text-primary m-0">{{ comp_id }}</h4>
-                <form action="/profile" method="POST" id="updateinfo" name="updateinfo">
+                <form>
                   <div class="form-group">
                     <label for="firstname">First Name</label>
                     <input type="text" class="form-control" id="firstname" name="firstname" value="{{ fname }}" disabled>
@@ -38,30 +36,28 @@
                   </div>
                   <div class="form-group">
                     <label for="gradyear">Graduation Year</label>
-                    <select class="form-control " id="gradyear" name="gradyear" disabled>
-          					  <option value={{ gradyear }} selected >{{ gradyear }}</option>
-          					  <option value=2021 >2021</option>
-          					  <option value=2022>2022</option>
-          					  <option value=2023>2023</option>
-          					  <option value=2024>2024</option>
-          					  <option value=2025>2025</option>
-          					</select>
+                    <input type="text" class="form-control" id="gradyear" name="gradyear" value="{{ gradyear }}" disabled>
                   </div>
                   <div class="form-group">
                     <label for="major">Primary Major</label>
-                    <select class="form-control " id="major" name="major" disabled>
-          					  <option value="{{ major }}" selected >{{ major }}</option>
-          					  <option value="Computer Science">Computer Science</option>
-          					  <option value="Computer Engineering">Computer Engineering</option>
-          					  <option value="Electrical Engineering">Electrical Engineering</option>
-          					  <option value="Systems Engineering">Systems Engineering</option>
-          					</select>
+                    <input type="text" class="form-control" id="major" name="major" value="{{ major }}" disabled>
                   </div>
-
-                <button type="button" id="edit" name="edit" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Edit</button>
-                <button type="button" id="savechanges" name="savechanges" class="btn btn-primary float-right" hidden>Save Changes</button>
-
                 </form>
+            </div>
+
+          </div>
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">Mutual Courses: </h4>
+                <ul class="list-group" id="friendlist" >
+                </ul>
+            </div>
+
+            <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Mutual Clubs: </h4>
+                <ul class="list-group" id="requestlist">
+                 
+                </ul>
             </div>
 
           </div>

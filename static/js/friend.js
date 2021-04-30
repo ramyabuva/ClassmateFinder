@@ -1,7 +1,4 @@
 
-
-$(document).ready(function(){
-
 	function remove_friend(compid, elementname){
 		xhr = $.ajax({
 		        url: 'remove-friend',
@@ -15,19 +12,36 @@ $(document).ready(function(){
 		litem.remove();
 	}
 
-	xhr = $.ajax({
-	        url: 'friend-list',
-	        type: 'GET',        
-	    });
-	xhr.done( () => {
-		friends = JSON.parse(xhr['responseText']);
+	function add_friend(compid, elementname){
+		xhr = $.ajax({
+		        url: 'add-friend',
+		        type: 'POST', 
+		        data: {
+		        	"friend" : compid
+		        }       
+		    });
+		xhr.done( () =>{
+			xhr2 = $.ajax({
+			        url: 'friend-list',
+			        type: 'GET',        
+			    });
+			xhr2.done( () => {
+				populate_friendlist(JSON.parse(xhr2['responseText']));
+			});
+		});
+
+		litem = document.getElementById(elementname)
+		litem.remove();
+	}
+
+	function populate_friendlist(friends){
 		var friendlist = document.getElementById("friendlist");
 		friendlist.innerHTML = ""
 		for (const [key, value] of Object.entries(friends)) {
 		  console.log(key);
 		  const litem = document.createElement("li");
 		  litem.setAttribute('class', 'list-group-item');
-		  litem.innerText += value['name'];
+		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
 
 		  const removefriendbutton = document.createElement("button");
 		  removefriendbutton.setAttribute('type', 'button');
@@ -41,20 +55,18 @@ $(document).ready(function(){
 	      litem.setAttribute('id', key + '-element');
 	      friendlist.appendChild(litem);
 		}
-	});
-
-	function add_friend(compid, elementname){
-		xhr = $.ajax({
-		        url: 'add-friend',
-		        type: 'POST', 
-		        data: {
-		        	"friend" : compid
-		        }       
-		    });
-
-		litem = document.getElementById(elementname)
-		litem.remove();
 	}
+	
+$(document).ready(function(){
+
+	xhr = $.ajax({
+	        url: 'friend-list',
+	        type: 'GET',        
+	    });
+	xhr.done( () => {
+		populate_friendlist(JSON.parse(xhr['responseText']));
+		
+	});
 
 	xhr2 = $.ajax({
 	        url: 'friend-requests',
@@ -68,7 +80,7 @@ $(document).ready(function(){
 		  console.log(key);
 		  const litem = document.createElement("li");
 		  litem.setAttribute('class', 'list-group-item');
-		  litem.innerText += value['name'];
+		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
 
 		  const denyfriendbutton = document.createElement("button");
 		  denyfriendbutton.setAttribute('type', 'button');
@@ -85,8 +97,36 @@ $(document).ready(function(){
 		  litem.appendChild(addfriendbutton);
 
 
-	      litem.innerHTML += "<br> <p style=\"color:gray\">" + key + ") </p>";
+	      litem.innerHTML += "<br> <p style=\"color:gray\">(" + key + ") </p>";
 	      litem.setAttribute('id', key + '-request');
+	      requestlist.appendChild(litem);
+		}
+	});
+
+	xhr3 = $.ajax({
+	        url: 'requested-friends',
+	        type: 'GET',        
+	    });
+	xhr3.done( () => {
+		requests = JSON.parse(xhr3['responseText']);
+		var requestlist = document.getElementById("requested");
+		requestlist.innerHTML = ""
+		for (const [key, value] of Object.entries(requests)) {
+		  console.log(key);
+		  const litem = document.createElement("li");
+		  litem.setAttribute('class', 'list-group-item');
+		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
+
+		  const withdrawrequestbutton = document.createElement("button");
+		  withdrawrequestbutton.setAttribute('type', 'button');
+		  withdrawrequestbutton.setAttribute('class', 'btn btn-danger float-right');
+		  withdrawrequestbutton.setAttribute('onclick', 'remove_friend("' + key + '", "' +key+ '-requested")');
+		  withdrawrequestbutton.innerText = 'Withdraw';
+		  litem.appendChild(withdrawrequestbutton);
+
+
+	      litem.innerHTML += "<br> <p style=\"color:gray\">(" + key + ") </p>";
+	      litem.setAttribute('id', key + '-requested');
 	      requestlist.appendChild(litem);
 		}
 	});

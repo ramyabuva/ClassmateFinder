@@ -44,6 +44,23 @@ def profile():
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
 
+@app.route('/user', methods=['GET'])
+def user():
+	# TODO: get user information, mutual classes, and mutual clubs
+	if 'user' in session:
+		cid = request.args.get('cid')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE comp_id = %(cid)s", {"cid": cid})
+		myresult = mycursor.fetchall()
+		cnx.close()
+		if len(myresult) > 0:
+			return render_template('user.html', comp_id = myresult[0][0], 
+				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
+	return redirect('/')
+
+
 @app.route('/friend-list', methods=['GET', 'POST'])
 def friendlist():
 	if request.method == "GET":
@@ -79,15 +96,48 @@ def friendrequests():
 				toRet[friend[0]] = {'name': str(friend[1]) + " "+ str(friend[2]) };
 			return toRet
 
+@app.route('/requested-friends', methods=['GET'])
+def requested():
+	if request.method == "GET":
+		if 'user' in session:
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			mycursor = cnx.cursor()
+			mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT DISTINCT comp_id_friend as comp_id FROM Friends_With WHERE comp_id_user = %(cid)s AND comp_id_friend NOT IN (SELECT DISTINCT comp_id_user FROM Friends_With WHERE comp_id_friend = %(cid)s) ) as t1 NATURAL JOIN User", {"cid": session['user']})
+			friends = mycursor.fetchall()
+			cnx.close()
+			toRet = {}
+
+			for friend in friends:
+				toRet[friend[0]] = {'name': str(friend[1]) + " "+ str(friend[2]) };
+			return toRet
+
 @app.route('/add-friend', methods=[ 'POST'])
 def addFriend(): #TODO: implement removal from Friends_With table
-	print(request.form)
+	if request.method == "POST":
+		if 'user' in session:
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			mycursor = cnx.cursor()
+			mycursor.execute("INSERT INTO `Friends_With` (`comp_id_user`, `comp_id_friend`) VALUES (%(cid)s, %(friendid)s);", {"cid": session['user'], "friendid" : request.form["friend"]})
+			cnx.commit()
+			cnx.close()
+			return {}
 	return {}
 
 
 @app.route('/remove-friend', methods=[ 'POST'])
 def removeFriend(): #TODO: implement removal from Friends_With table
-	print(request.form)
+	if request.method == "POST":
+		if 'user' in session:
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			mycursor = cnx.cursor()
+			mycursor.execute("DELETE FROM Friends_With WHERE comp_id_user = %(friendid)s AND comp_id_friend = %(cid)s", {"cid": session['user'], "friendid" : request.form["friend"]})
+			mycursor.execute("DELETE FROM Friends_With WHERE comp_id_user = %(cid)s AND comp_id_friend = %(friendid)s", {"cid": session['user'], "friendid" : request.form["friend"]})
+			cnx.commit()
+			cnx.close()
+			return {}
 	return {}
 
 
