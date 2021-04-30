@@ -1,6 +1,20 @@
 
 
 $(document).ready(function(){
+
+	function remove_friend(compid){
+		litem = document.getElementById( compid+ '-element')
+		litem.remove();
+		  	console.log("here");
+		  	xhr = $.ajax({
+		        url: 'remove-friend',
+		        type: 'POST', 
+		        data: {
+		        	"friend" : compid
+		        }       
+		    });
+	}
+
 	xhr = $.ajax({
 	        url: 'friend-list',
 	        type: 'GET',        
@@ -15,23 +29,17 @@ $(document).ready(function(){
 		  const litem = document.createElement("li");
 		  litem.setAttribute('class', 'list-group-item');
 		  litem.innerText += value['name'];
+
 		  const removefriendbutton = document.createElement("button");
 		  removefriendbutton.setAttribute('type', 'button');
 		  removefriendbutton.setAttribute('class', 'btn btn-danger float-right');
+		  removefriendbutton.setAttribute('onclick', 'remove_friend("' + key + '")');
 		  removefriendbutton.innerText = 'Remove Friend';
 		  litem.appendChild(removefriendbutton);
-		  removefriendbutton.addEventListener("click", () => { //TODO: Get event listener working to remove
-	    	litem.remove();
-		  	console.log("here");
-		  	xhr = $.ajax({
-		        url: 'remove-friend',
-		        type: 'POST', 
-		        data: {
-		        	"friend" : key
-		        }       
-		    });
-		  });
+
+
 	      litem.innerHTML += "<br> <p style=\"color:gray\">" + key + " (" + value['major'] + ", " + value['gradyear'] + ")" + "<br>Mutual Courses: " +  value['classes'] + "<br>Mutual Clubs:</p>";
+	      litem.setAttribute('id', key + '-element');
 	      friendlist.appendChild(litem);
 		}
 	});
