@@ -51,29 +51,39 @@ def friendlist():
 			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
 	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
-			mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major, course_id, dept,course_number FROM (SELECT comp_id, course_id FROM (SELECT DISTINCT comp_id_friend as comp_id FROM Friends_With WHERE comp_id_user = %(cid)s) as F NATURAL LEFT JOIN Is_Taking) as mutuals NATURAL LEFT JOIN Course NATURAL JOIN User",
-				{"cid": session['user']})
+			mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s) as t1 NATURAL JOIN User", {"cid": session['user']})
 			friends = mycursor.fetchall()
-			mycursor.execute("SELECT course_id FROM Is_Taking WHERE comp_id = %(cid)s", {"cid": session['user']})
-			mycourses = mycursor.fetchall()
 			cnx.close()
-			mycourses = np.array(mycourses).flatten()
 			toRet = {}
 
-			for mutualclass in friends:
-				if toRet.get(mutualclass[0], False):
-					if mutualclass[5] in mycourses:
-						toRet[mutualclass[0]]['classes'].append(str(mutualclass[6]) + str(mutualclass[7]) +  "(" + str(mutualclass[5]) + ")" )
-				else:
-					toRet[mutualclass[0]] = {}
-					toRet[mutualclass[0]]['name'] = mutualclass[1] + " " + mutualclass[2]
-					toRet[mutualclass[0]]['gradyear'] = mutualclass[3]
-					toRet[mutualclass[0]]['major'] = mutualclass[4]
-					if str(mutualclass[5]) != "None" and mutualclass[5] in mycourses:
-						toRet[mutualclass[0]]['classes'] = [str(mutualclass[6]) + str(mutualclass[7]) + "(" + str(mutualclass[5]) + ")" ]
-					else:
-						toRet[mutualclass[0]]['classes'] = ["None"]
+			for friend in friends:
+				toRet[friend[0]] = {'name': str(friend[1]) + " "+ str(friend[2]),
+									'graduation_year':friend[3],
+									'major':friend[4]
+									 };
 			return toRet
+
+@app.route('/friend-requests', methods=['GET', 'POST'])
+def friendrequests():
+	if request.method == "GET":
+		if 'user' in session:
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			mycursor = cnx.cursor()
+			mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT DISTINCT comp_id_user as comp_id FROM Friends_With WHERE comp_id_friend = %(cid)s AND comp_id_user NOT IN (SELECT DISTINCT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s) ) as t1 NATURAL JOIN User", {"cid": session['user']})
+			friends = mycursor.fetchall()
+			cnx.close()
+			toRet = {}
+
+			for friend in friends:
+				toRet[friend[0]] = {'name': str(friend[1]) + " "+ str(friend[2]) };
+			return toRet
+
+@app.route('/add-friend', methods=[ 'POST'])
+def addFriend(): #TODO: implement removal from Friends_With table
+	print(request.form)
+	return {}
+
 
 @app.route('/remove-friend', methods=[ 'POST'])
 def removeFriend(): #TODO: implement removal from Friends_With table
@@ -130,18 +140,20 @@ def register():
 	myresult = mycursor.fetchall()
 	if len(myresult) > 0:
 		return redirect('/')
-	session['user'] = request.form['cid'].lower()
-	mycursor.execute("INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES (%(cid)s, %(fname)s,%(gradyear)s,%(lname)s,%(major)s, %(pwd)s)",
-	 {  'pwd': encode_password(request.form['password']) ,
-	 	'cid' : request.form['cid'].lower(),
-		'fname' :request.form['firstname'],
-		'gradyear': int(request.form['grad-year']),
-		'lname' : request.form['lastname'],
-		'major': request.form['major'],
-	 })
-	cnx.commit()
-	cnx.close()
-	return redirect('/profile')
+	if re.match("^[a-zA-Z0-9_]*$", request.form['cid']):
+		session['user'] = request.form['cid'].lower()
+		mycursor.execute("INSERT INTO `User` (`comp_id`, `first_name`, `graduation_year`, `last_name`, `major`, `password`) VALUES (%(cid)s, %(fname)s,%(gradyear)s,%(lname)s,%(major)s, %(pwd)s)",
+		 {  'pwd': encode_password(request.form['password']) ,
+		 	'cid' : request.form['cid'].lower(),
+			'fname' :request.form['firstname'],
+			'gradyear': int(request.form['grad-year']),
+			'lname' : request.form['lastname'],
+			'major': request.form['major'],
+		 })
+		cnx.commit()
+		cnx.close()
+		return redirect('/profile')
+	return redirect('/')
 
 def encode_password(pwd):
 	return hashlib.pbkdf2_hmac('sha256', pwd.encode('utf-8'), bytes([32]), 100000)
