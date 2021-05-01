@@ -159,12 +159,12 @@
 		  litem.setAttribute('class', 'list-group-item');
 		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
 
-		  const removefriendbutton = document.createElement("button");
-		  removefriendbutton.setAttribute('type', 'button');
-		  removefriendbutton.setAttribute('class', 'btn btn-success float-right');
-		  removefriendbutton.setAttribute('onclick', 'add_friend_from_search("' + key + '", "' +key+ '-element")');
-		  removefriendbutton.innerText = 'Add Friend';
-		  litem.appendChild(removefriendbutton);
+		  const addfriendbutton = document.createElement("button");
+		  addfriendbutton.setAttribute('type', 'button');
+		  addfriendbutton.setAttribute('class', 'btn btn-success float-right');
+		  addfriendbutton.setAttribute('onclick', 'add_friend_from_search("' + key + '", "' +key+ '-element")');
+		  addfriendbutton.innerText = 'Add Friend';
+		  litem.appendChild(addfriendbutton);
 
 
 	      litem.innerHTML += "<br> <p style=\"color:gray\">" + key + " (" + value['major'] + ", " + value['graduation_year'] + ") </p>";

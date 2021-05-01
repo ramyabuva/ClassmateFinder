@@ -163,6 +163,45 @@ def myclubs():
 		return toRet
 	return {}
 
+@app.route('/search-clubs', methods=['POST'])
+def searchclubs():
+	if 'user' in session:
+		club_name = request.form['club_name'] + "%"
+		category = request.form['category']
+		if category == "":
+			category += "%"
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT club_name FROM Club WHERE club_name LIKE %(club_name)s AND category LIKE %(category)s AND club_name NOT IN (SELECT DISTINCT club_name FROM Member_Of WHERE comp_id = %(cid)s) LIMIT 5", 
+			{
+				 "club_name": club_name,
+				 "category": category,
+				 "cid":session['user']
+			 })
+		searchresults = mycursor.fetchall()
+
+		mycursor.execute("SELECT club_name, comp_id FROM Member_Of WHERE comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s)", {"cid": session['user']})
+		myresult = mycursor.fetchall()
+		cnx.close()
+
+		mutual_clubfriends = {}
+		for x in myresult:
+			if mutual_clubfriends.get(x[0], False):
+				mutual_clubfriends[x[0]].append(x[1])
+			else:
+				mutual_clubfriends[x[0]] = [x[1]]
+
+		toRet = {}
+		for x in searchresults:
+			if mutual_clubfriends.get(x[0], False):
+				toRet[x[0]] = mutual_clubfriends[x[0]]
+			else:
+				toRet[x[0]] = []	
+		
+		return toRet
+	return {}
+
 @app.route('/friend-list', methods=['GET', 'POST'])
 def friendlist():
 	if request.method == "GET":
