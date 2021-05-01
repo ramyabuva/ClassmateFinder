@@ -40,42 +40,24 @@ table.center {
             </div>
 
             <div class="col-6 border rounded-lg p-4 float-right" id="add-friends" name="add-friends">
-                <h4 class="text-primary m-0">Add Friends: </h4>
+                <h4 class="text-primary m-0">Find Friends: </h4>
                 <form>
                   <div class="form-group">
                     <label for="friend-search">Search</label>
-                    <input type="text" class="form-control" id="friend-search-cid" placeholder="Search by computing IDs">
+                    <input type="text" class="form-control" id="friend-search-cid" placeholder="Search by computing ID">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search-name" placeholder="Search by name">
+                    <input type="text" class="form-control" id="friend-search-fname" placeholder="Search by first name">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search-name" placeholder="Search by major">
+                    <input type="text" class="form-control" id="friend-search-lname" placeholder="Search by last name">
                   </div>
-                  <!-- could be a dropdown-->
                 </form>
-                <ul class="list-group" >
-                  <li class="list-group-item">
-                    Ramya Bhaskara
-                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
-                    <p style="color:gray">rsb4zm  - Computer Science
-                      <br>
-                    Mutual Courses: 
-                    <br>
-                    Mutual Clubs:
-                    </p>
-                  </li>
-                  <li class="list-group-item">
-                    Ramya Bhaskara
-                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
-                    <p style="color:gray">rsb4zm  - Computer Science</p>
-                  </li>
-                  <li class="list-group-item">
-                    Ramya Bhaskara
-                    <button type="button" class="btn btn-primary float-right">Add Friend</button>
-                    <p style="color:gray">rsb4zm  - Computer Science</p>
-                  </li>
-                </ul>
+                <button class="btn btn-primary" id="searchusers">Search Users</button>
+                <div>
+                  <ul class="list-group" id="search-results">
+                  </ul>
+                </div>
             </div>
           </div>
           <div class="row mb-4 py-2 px-0 px-md-4">

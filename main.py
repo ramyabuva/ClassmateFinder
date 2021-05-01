@@ -60,6 +60,34 @@ def user():
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
 
+@app.route('/search-users', methods=['POST'])
+def searchusers():
+	if 'user' in session:
+		cid = request.form['cid'] + "%"
+		fname = request.form['firstname'] + "%"
+		lname = request.form['lastname'] + "%"
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
+	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE first_name LIKE %(fname)s AND last_name LIKE %(lname)s AND comp_id LIKE %(cidsearch)s AND comp_id != %(cid)s AND comp_id NOT IN (SELECT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s)", 
+			{
+				 "cid": session['user'],
+				 "cidsearch": cid, 
+				 "fname": fname, 
+				 "lname": lname
+			 })
+		myresult = mycursor.fetchall()
+		cnx.close()
+
+		toRet = {}
+		for user in myresult:
+			toRet[user[0]] = {'name': str(user[1]) + " "+ str(user[2]),
+									'graduation_year':user[3],
+									'major':user[4]
+									 };
+		return toRet
+	return {}
+
 
 @app.route('/friend-list', methods=['GET', 'POST'])
 def friendlist():
@@ -119,7 +147,7 @@ def addFriend(): #TODO: implement removal from Friends_With table
 			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
 	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
-			mycursor.execute("INSERT INTO `Friends_With` (`comp_id_user`, `comp_id_friend`) VALUES (%(cid)s, %(friendid)s);", {"cid": session['user'], "friendid" : request.form["friend"]})
+			mycursor.execute("INSERT IGNORE INTO `Friends_With` (`comp_id_user`, `comp_id_friend`) VALUES (%(cid)s, %(friendid)s);", {"cid": session['user'], "friendid" : request.form["friend"]})
 			cnx.commit()
 			cnx.close()
 			return {}
