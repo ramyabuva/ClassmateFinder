@@ -34,6 +34,46 @@
 		litem.remove();
 	}
 
+	function add_friend_from_search(compid, elementname){
+		xhr = $.ajax({
+		        url: 'add-friend',
+		        type: 'POST', 
+		        data: {
+		        	"friend" : compid
+		        }       
+		    });
+		xhr.done( () =>{
+			if ($("#" + compid + "-request").length > 0) {
+			 	xhr2 = $.ajax({
+			        url: 'friend-list',
+			        type: 'GET',        
+			    });
+				xhr2.done( () => {
+					populate_friendlist(JSON.parse(xhr2['responseText']));
+				}); 
+				xhr3 = $.ajax({
+				        url: 'friend-requests',
+				        type: 'GET',        
+				    });
+				xhr3.done( () => {
+					populate_requestlist(JSON.parse(xhr3['responseText']));
+				});
+			} else{
+				console.log("here");
+				xhr3 = $.ajax({
+				        url: 'requested-friends',
+				        type: 'GET',        
+				    });
+				xhr3.done( () => {
+					populate_requested(JSON.parse(xhr3['responseText']));
+				});
+			}
+		});
+
+		litem = document.getElementById(elementname)
+		litem.remove();
+	}
+
 	function populate_friendlist(friends){
 		var friendlist = document.getElementById("friendlist");
 		friendlist.innerHTML = ""
@@ -57,46 +97,7 @@
 		}
 	}
 
-	function populate_searchresults(results){
-		var resultlist = document.getElementById("search-results");
-		resultlist.innerHTML = ""
-		for (const [key, value] of Object.entries(results)) {
-		  console.log(key);
-		  const litem = document.createElement("li");
-		  litem.setAttribute('class', 'list-group-item');
-		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
-
-		  const removefriendbutton = document.createElement("button");
-		  removefriendbutton.setAttribute('type', 'button');
-		  removefriendbutton.setAttribute('class', 'btn btn-success float-right');
-		  removefriendbutton.setAttribute('onclick', 'add_friend("' + key + '", "' +key+ '-element")');
-		  removefriendbutton.innerText = 'Add Friend';
-		  litem.appendChild(removefriendbutton);
-
-
-	      litem.innerHTML += "<br> <p style=\"color:gray\">" + key + " (" + value['major'] + ", " + value['graduation_year'] + ") </p>";
-	      litem.setAttribute('id', key + '-element');
-	      resultlist.appendChild(litem);
-		}
-	}
-	
-$(document).ready(function(){
-
-	xhr = $.ajax({
-	        url: 'friend-list',
-	        type: 'GET',        
-	    });
-	xhr.done( () => {
-		populate_friendlist(JSON.parse(xhr['responseText']));
-		
-	});
-
-	xhr2 = $.ajax({
-	        url: 'friend-requests',
-	        type: 'GET',        
-	    });
-	xhr2.done( () => {
-		requests = JSON.parse(xhr2['responseText']);
+	function populate_requestlist(requests){
 		var requestlist = document.getElementById("requestlist");
 		requestlist.innerHTML = ""
 		for (const [key, value] of Object.entries(requests)) {
@@ -124,14 +125,9 @@ $(document).ready(function(){
 	      litem.setAttribute('id', key + '-request');
 	      requestlist.appendChild(litem);
 		}
-	});
+	}
 
-	xhr3 = $.ajax({
-	        url: 'requested-friends',
-	        type: 'GET',        
-	    });
-	xhr3.done( () => {
-		requests = JSON.parse(xhr3['responseText']);
+	function populate_requested(requests){
 		var requestlist = document.getElementById("requested");
 		requestlist.innerHTML = ""
 		for (const [key, value] of Object.entries(requests)) {
@@ -152,6 +148,56 @@ $(document).ready(function(){
 	      litem.setAttribute('id', key + '-requested');
 	      requestlist.appendChild(litem);
 		}
+	}
+
+	function populate_searchresults(results){
+		var resultlist = document.getElementById("search-results");
+		resultlist.innerHTML = ""
+		for (const [key, value] of Object.entries(results)) {
+		  console.log(key);
+		  const litem = document.createElement("li");
+		  litem.setAttribute('class', 'list-group-item');
+		  litem.innerHTML += "<a href=\"/user?cid="+key + "\">" + value['name'] + "</a>";
+
+		  const removefriendbutton = document.createElement("button");
+		  removefriendbutton.setAttribute('type', 'button');
+		  removefriendbutton.setAttribute('class', 'btn btn-success float-right');
+		  removefriendbutton.setAttribute('onclick', 'add_friend_from_search("' + key + '", "' +key+ '-element")');
+		  removefriendbutton.innerText = 'Add Friend';
+		  litem.appendChild(removefriendbutton);
+
+
+	      litem.innerHTML += "<br> <p style=\"color:gray\">" + key + " (" + value['major'] + ", " + value['graduation_year'] + ") </p>";
+	      litem.setAttribute('id', key + '-element');
+	      resultlist.appendChild(litem);
+		}
+	}
+	
+$(document).ready(function(){
+
+	xhr = $.ajax({
+	        url: 'friend-list',
+	        type: 'GET',        
+	    });
+	xhr.done( () => {
+		populate_friendlist(JSON.parse(xhr['responseText']));
+		
+	});
+
+	xhr2 = $.ajax({
+	        url: 'friend-requests',
+	        type: 'GET',        
+	    });
+	xhr2.done( () => {
+		populate_requestlist(JSON.parse(xhr2['responseText']));
+	});
+
+	xhr3 = $.ajax({
+	        url: 'requested-friends',
+	        type: 'GET',        
+	    });
+	xhr3.done( () => {
+		populate_requested(JSON.parse(xhr3['responseText']));
 	});
 
 	document.getElementById("searchusers").addEventListener('click', () =>{
@@ -165,7 +211,7 @@ $(document).ready(function(){
 	         }       
 	    });
 		xhr4.done( () => {
-			populate_searchresults(JSON.parse(xhr4['responseText']))
+			populate_searchresults(JSON.parse(xhr4['responseText']));
 		});
 	});
 

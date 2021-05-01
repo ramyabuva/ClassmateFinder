@@ -69,7 +69,7 @@ def searchusers():
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
 	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
-		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE first_name LIKE %(fname)s AND last_name LIKE %(lname)s AND comp_id LIKE %(cidsearch)s AND comp_id != %(cid)s AND comp_id NOT IN (SELECT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s)", 
+		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE first_name LIKE %(fname)s AND last_name LIKE %(lname)s AND comp_id LIKE %(cidsearch)s AND comp_id != %(cid)s AND comp_id NOT IN (SELECT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s) LIMIT 5", 
 			{
 				 "cid": session['user'],
 				 "cidsearch": cid, 
