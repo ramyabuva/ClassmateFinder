@@ -97,6 +97,72 @@ def searchusers():
 	return {}
 
 
+# def friends_in_club():
+# 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+# 	                              database='rsb4zm', auth_plugin='mysql_native_password')
+# 	mycursor = cnx.cursor()
+# 	mycursor.execute("SELECT t1.club_name, t2.comp_id FROM Member_Of as t1 CROSS JOIN Member_Of as t2 WHERE t1.club_name = t2.club_name AND t1.comp_id = %(cid)s AND t2.comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s);", {"cid": session['user']})
+# 	myresult = mycursor.fetchall()
+# 	cnx.close()
+# 	toRet = {}
+# 	for x in myresult:
+# 		if toRet.get(x[0], False):
+# 			toRet[x[0]].append(x[1])
+# 		else:
+# 			toRet[x[0]] = [x[1]]
+# 	return toRet
+
+@app.route('/remove-club', methods=['POST'])
+def removeclub():
+	if 'user' in session:
+		club = request.form['club']
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("DELETE FROM Member_Of WHERE comp_id = %(cid)s AND club_name = %(club)s", {"cid": session['user'], "club": club})
+		cnx.commit()
+		cnx.close()
+		return {}
+	return {}
+
+@app.route('/add-club', methods=['POST'])
+def addclub():
+	if 'user' in session:
+		club = request.form['club']
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("INSERT IGNORE INTO `Member_Of` (`comp_id`, `club_name`) VALUES (%(cid)s, %(club)s);", {"cid": session['user'], "club": club})
+		cnx.commit()
+		cnx.close()
+		return {}
+	return {}
+
+@app.route('/my-clubs', methods=['GET', 'POST'])
+def myclubs():
+	if 'user' in session:
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT DISTINCT club_name FROM Member_Of WHERE comp_id=%(cid)s;", {"cid": session['user']})
+		myclubs = mycursor.fetchall()
+
+		mycursor.execute("SELECT t1.club_name, t2.comp_id FROM Member_Of as t1 CROSS JOIN Member_Of as t2 WHERE t1.club_name = t2.club_name AND t1.comp_id = %(cid)s AND t2.comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s);", {"cid": session['user']})
+		myresult = mycursor.fetchall()
+		cnx.close()
+		toRet = {}
+		for x in myresult:
+			if toRet.get(x[0], False):
+				toRet[x[0]].append(x[1])
+			else:
+				toRet[x[0]] = [x[1]]
+
+		for x in myclubs:
+			if x[0] not in toRet:
+				toRet[x[0]] = []
+		return toRet
+	return {}
+
 @app.route('/friend-list', methods=['GET', 'POST'])
 def friendlist():
 	if request.method == "GET":

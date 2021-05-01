@@ -33,22 +33,10 @@ table.center {
 
         <div class="container mb-4">
           <div class="row mb-4 py-2 px-0 px-md-4">
-            <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
+            <div class="col-6 border rounded-lg p-4" id="myclubs" name="myclubs">
                 <h4 class="text-primary m-0">Your Clubs</h4>
-                <ul class="list-group" >
-                  <li class="list-group-item">
-                    AOE
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
-                    <p style="color:gray">Mutual Friends: </p>
-                  </li>
-                  <li class="list-group-item">
-                    ACM
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
-                  </li>
-                  <li class="list-group-item">
-                    WiCS
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Club</button>
-                  </li>
+                <ul class="list-group" id="clublist" name="clublist">
+                  <!-- my clubs-->
                 </ul>
             </div>
 
@@ -60,23 +48,20 @@ table.center {
                     <input type="text" class="form-control" id="friend-search" placeholder="Search by club name">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search" placeholder="Search by friend name"> <!-- could be a dropdown-->
+                    <label for="gradyear">Category</label>
+                    <select class="form-control " id="gradyear" name="gradyear">
+                      <option value="" selected ></option>
+                      <option value="Active" >Active</option>
+                      <option value="Academic & Professional">Academic & Professional</option>
+                      <option value="Student Government">Student Government</option>
+                      <option value="Performing Arts">Performing Arts</option>
+                      <option value="Public Service">Public Service</option>
+                    </select>
                   </div>
                 </form>
-                <ul class="list-group" >
-                  <li class="list-group-item">
-                    ACM
-                    <button type="button" class="btn btn-primary float-right">Add Club</button>
-                    <p style="color:gray">Mutual Friends: </p>
-                  </li>
-                  <li class="list-group-item">
-                    A Capella
-                    <button type="button" class="btn btn-primary float-right">Add Club</button>
-                  </li>
-                  <li class="list-group-item">
-                    Waffle Club
-                    <button type="button" class="btn btn-primary float-right">Add Club</button>
-                  </li>
+                <button class="btn btn-primary" id="searchclubs">Search Clubs</button>
+                <ul class="list-group" id="club-searchresults">
+                  <!-- search results-->
                 </ul>
             </div>
           </div>
