@@ -16,12 +16,20 @@ import mysql.connector
 import numpy as np
 
 import hashlib
+import re
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 
 app = Flask(__name__)
 app.secret_key = 'randomstring'
+
+
+db_users = {
+	"rsb4zm_a": 'Spr1ng2021!!',
+	"rsb4zm_b": 'Spr1ng2021!!',
+	"rsb4zm_c": 'Spr1ng2021!!',
+}
 
 
 @app.route('/', methods=['GET'])
@@ -33,8 +41,8 @@ def main():
 @app.route('/profile', methods=['GET', 'POST'])
 def profile():
 	if 'user' in session:
-		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {'cid': session['user']})
 		myresult = mycursor.fetchall()
@@ -49,8 +57,8 @@ def user():
 	# TODO: get user information, mutual classes, and mutual clubs
 	if 'user' in session:
 		cid = request.args.get('cid')
-		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE comp_id = %(cid)s", {"cid": cid})
 		myresult = mycursor.fetchall()
@@ -66,8 +74,8 @@ def searchusers():
 		cid = request.form['cid'] + "%"
 		fname = request.form['firstname'] + "%"
 		lname = request.form['lastname'] + "%"
-		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE first_name LIKE %(fname)s AND last_name LIKE %(lname)s AND comp_id LIKE %(cidsearch)s AND comp_id != %(cid)s AND comp_id NOT IN (SELECT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s) LIMIT 5", 
 			{
@@ -93,8 +101,8 @@ def searchusers():
 def friendlist():
 	if request.method == "GET":
 		if 'user' in session:
-			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
 			mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s) as t1 NATURAL JOIN User", {"cid": session['user']})
 			friends = mycursor.fetchall()
@@ -112,8 +120,8 @@ def friendlist():
 def friendrequests():
 	if request.method == "GET":
 		if 'user' in session:
-			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
 			mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT DISTINCT comp_id_user as comp_id FROM Friends_With WHERE comp_id_friend = %(cid)s AND comp_id_user NOT IN (SELECT DISTINCT comp_id_friend FROM Friends_With WHERE comp_id_user = %(cid)s) ) as t1 NATURAL JOIN User", {"cid": session['user']})
 			friends = mycursor.fetchall()
@@ -128,8 +136,8 @@ def friendrequests():
 def requested():
 	if request.method == "GET":
 		if 'user' in session:
-			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
 			mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT DISTINCT comp_id_friend as comp_id FROM Friends_With WHERE comp_id_user = %(cid)s AND comp_id_friend NOT IN (SELECT DISTINCT comp_id_user FROM Friends_With WHERE comp_id_friend = %(cid)s) ) as t1 NATURAL JOIN User", {"cid": session['user']})
 			friends = mycursor.fetchall()
@@ -144,8 +152,8 @@ def requested():
 def addFriend(): #TODO: implement removal from Friends_With table
 	if request.method == "POST":
 		if 'user' in session:
-			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
 			mycursor.execute("INSERT IGNORE INTO `Friends_With` (`comp_id_user`, `comp_id_friend`) VALUES (%(cid)s, %(friendid)s);", {"cid": session['user'], "friendid" : request.form["friend"]})
 			cnx.commit()
@@ -158,8 +166,8 @@ def addFriend(): #TODO: implement removal from Friends_With table
 def removeFriend(): #TODO: implement removal from Friends_With table
 	if request.method == "POST":
 		if 'user' in session:
-			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+			cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 			mycursor = cnx.cursor()
 			mycursor.execute("DELETE FROM Friends_With WHERE comp_id_user = %(friendid)s AND comp_id_friend = %(cid)s", {"cid": session['user'], "friendid" : request.form["friend"]})
 			mycursor.execute("DELETE FROM Friends_With WHERE comp_id_user = %(cid)s AND comp_id_friend = %(friendid)s", {"cid": session['user'], "friendid" : request.form["friend"]})
@@ -173,8 +181,8 @@ def removeFriend(): #TODO: implement removal from Friends_With table
 def update():
 	print(request.form)
 	if 'user' in session:
-		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-	                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("UPDATE `User` SET `first_name` = %(fname)s, `last_name` = %(lname)s, `graduation_year` = %(gradyear)s, `major` = %(major)s WHERE `User`.`comp_id` = %(cid)s",
 			{
@@ -197,8 +205,8 @@ def logout():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	if request.method == "POST":
-		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_b', password=db_users['rsb4zm_b'],
+                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {'cid': request.form['cid-login'].lower()})
 		myresult = mycursor.fetchall()
@@ -211,8 +219,8 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
-	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm', password='Spr1ng2021!!',
-                              database='rsb4zm_classmatefinder', auth_plugin='mysql_native_password')
+	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_b', password=db_users['rsb4zm_b'],
+                              database='rsb4zm', auth_plugin='mysql_native_password')
 	mycursor = cnx.cursor()
 	mycursor.execute("SELECT * FROM User WHERE comp_id = %(cid)s", {"cid": request.form['cid'].lower()})
 	myresult = mycursor.fetchall()

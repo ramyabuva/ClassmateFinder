@@ -46,7 +46,7 @@
                 <form action="/register" method="POST">
                   <div class="form-group">
                     <label for="cid-login">Computing Id</label>
-                    <input type="text" class="form-control" id="cid-signup" name="cid" placeholder="Computing ID" required>
+                    <input type="text" class="form-control" pattern="[a-z]{2,3}[0-9][a-z]{2,3}" id="cid-signup" name="cid" placeholder="Computing ID" required>
                   </div>
                   <div class="form-group">
                     <label for="cid-login">First Name</label>
