@@ -93,11 +93,14 @@ def user():
 		myresult = mycursor.fetchall()
 		mycursor.execute("SELECT DISTINCT t1.club_name FROM Member_Of as t1, Member_Of as t2 WHERE t1.comp_id=%(cid)s AND t2.comp_id=%(other_cid)s AND t1.club_name = t2.club_name", {"cid": session['user'], "other_cid": cid})
 		mutual_clubs = mycursor.fetchall()
+		mycursor.execute("SELECT course_id, dept, course_number FROM (SELECT t1.course_id FROM Is_Taking as t1 CROSS JOIN Is_Taking as t2 WHERE t1.comp_id = %(cid)s AND t2.comp_id = %(other_cid)s AND t1.course_id=t2.course_id) as T NATURAL JOIN Course", {"cid": session['user'], "other_cid": cid})
+		mutual_courses = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0:
 			return render_template('user.html', comp_id = myresult[0][0], 
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4], 
-				mutual_clubs = mutual_clubs, num_clubs = len(mutual_clubs))
+				mutual_clubs = mutual_clubs, num_clubs = len(mutual_clubs), 
+				mutual_courses = mutual_courses, num_courses = len(mutual_courses))
 	return redirect('/')
 
 @app.route('/search-users', methods=['POST'])

@@ -52,7 +52,7 @@
           </div>
           <div class="row mb-4 py-2 px-0 px-md-4">
             <div class="col-12 border rounded-lg p-4" id="add-friends" name="add-friends">
-                <h4 class="text-primary m-0">Mutual Clubs: </h4>
+                <h4 class="text-primary m-0">Mutual Friends: </h4>
                 <ul class="list-group" id="requestlist">
                   {%for i in range(0, num_mutuals)%}
                     <a href="/user?cid={{ mutual_friends[i][0] }}"><li class="list-group-item">{{ mutual_friends[i][1] }} {{ mutual_friends[i][2] }} ({{ mutual_friends[i][0] }})</li></a>
