@@ -57,12 +57,20 @@ def course():
 	# TODO: get user information, mutual classes, and mutual clubs
 	if 'user' in session:
 		course_id = request.args.get('course_id')
+		semester = request.args.get('semester')
+		year = request.args.get('year')
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
 	                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT course_id, dept, course_number, course_name, semester, year, days, time, building_name, room, comp_id, first_name, last_name FROM Course NATURAL JOIN Located_In NATURAL JOIN Classroom NATURAL JOIN Teaches NATURAL JOIN Professor WHERE course_id = %(course_id)s", {"course_id": course_id})
 		myresult = mycursor.fetchall()
-		mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT comp_id FROM Is_Taking WHERE course_id=%(course_id)s AND comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s))as T NATURAL JOIN User", {"cid": session['user'],"course_id": course_id})
+		mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT comp_id FROM Is_Taking WHERE course_id=%(course_id)s  AND semester=%(semester)s AND year=%(year)s AND comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s))as T NATURAL JOIN User", 
+			{
+			"cid": session['user'],
+			"course_id": course_id,
+			"semester": semester,
+			"year": year
+			})
 		mutual_friends = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0:
@@ -93,7 +101,7 @@ def user():
 		myresult = mycursor.fetchall()
 		mycursor.execute("SELECT DISTINCT t1.club_name FROM Member_Of as t1, Member_Of as t2 WHERE t1.comp_id=%(cid)s AND t2.comp_id=%(other_cid)s AND t1.club_name = t2.club_name", {"cid": session['user'], "other_cid": cid})
 		mutual_clubs = mycursor.fetchall()
-		mycursor.execute("SELECT course_id, dept, course_number FROM (SELECT t1.course_id FROM Is_Taking as t1 CROSS JOIN Is_Taking as t2 WHERE t1.comp_id = %(cid)s AND t2.comp_id = %(other_cid)s AND t1.course_id=t2.course_id) as T NATURAL JOIN Course", {"cid": session['user'], "other_cid": cid})
+		mycursor.execute("SELECT course_id, dept, course_number, semester, year FROM (SELECT t1.course_id FROM Is_Taking as t1 CROSS JOIN Is_Taking as t2 WHERE t1.comp_id = %(cid)s AND t2.comp_id = %(other_cid)s AND t1.course_id=t2.course_id AND t1.semester=t2.semester AND t1.year=t2.year) as T NATURAL JOIN Course", {"cid": session['user'], "other_cid": cid})
 		mutual_courses = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0:
@@ -131,21 +139,82 @@ def searchusers():
 		return toRet
 	return {}
 
+@app.route('/my-courses', methods=['GET', 'POST'])
+def mycourses():
+	if 'user' in session:
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT course_id, course_name, dept, course_number, semester, year FROM (SELECT DISTINCT course_id FROM Is_Taking WHERE comp_id=%(cid)s) as t1 NATURAL JOIN Course", {"cid": session['user']})
+		mycourses = mycursor.fetchall()
+		toRet = {}
+		for x in mycourses:
+			toRet[x[0]] = {"course_name": x[1], "dept": x[2], "course_number": x[3], "semester": x[4], "year": x[5]}
+		return toRet
+	return {}
 
-# def friends_in_club():
-# 	cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
-# 	                              database='rsb4zm', auth_plugin='mysql_native_password')
-# 	mycursor = cnx.cursor()
-# 	mycursor.execute("SELECT t1.club_name, t2.comp_id FROM Member_Of as t1 CROSS JOIN Member_Of as t2 WHERE t1.club_name = t2.club_name AND t1.comp_id = %(cid)s AND t2.comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s);", {"cid": session['user']})
-# 	myresult = mycursor.fetchall()
-# 	cnx.close()
-# 	toRet = {}
-# 	for x in myresult:
-# 		if toRet.get(x[0], False):
-# 			toRet[x[0]].append(x[1])
-# 		else:
-# 			toRet[x[0]] = [x[1]]
-# 	return toRet
+@app.route('/remove-course', methods=['POST'])
+def removecourse():
+	if 'user' in session:
+		course_id = request.form['course_id']
+		semester = request.form['semester']
+		year = request.form['year']
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("DELETE FROM Is_Taking WHERE comp_id = %(cid)s AND course_id = %(course_id)s AND semester = %(semester)s AND year = %(year)s", 
+			{"cid": session['user'], "course_id": course_id, "semester": semester, "year": year})
+		cnx.commit()
+		cnx.close()
+		return {}
+	return {}
+
+@app.route('/add-course', methods=['POST'])
+def addcourse():
+	if 'user' in session:
+		course_id = request.form['course_id']
+		semester = request.form['semester']
+		year = request.form['year']
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("INSERT IGNORE INTO `Is_Taking` (`comp_id`, `course_id`, `semester`, `year`) VALUES (%(cid)s, %(course_id)s, %(semester)s, %(year)s);", 
+			{"cid": session['user'], "course_id": course_id, "semester": semester, "year": year})
+		cnx.commit()
+		cnx.close()
+		return {}
+	return {}
+
+@app.route('/search-courses', methods=['POST'])
+def searchcourses():
+	if 'user' in session:
+		course_id = request.form['course_id'] + "%"
+		course_name = request.form['course_name'] + "%"
+		course_number = request.form['course_number'] + "%"
+		department = request.form['department']
+		if department == "":
+			department += "%"
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT course_id, course_name, dept, course_number, semester, year FROM Course WHERE dept LIKE %(department)s AND  course_number LIKE %(course_number)s AND course_id LIKE %(course_id)s AND course_name LIKE %(course_name)s AND course_id NOT IN (SELECT DISTINCT course_id FROM Is_Taking WHERE comp_id = %(cid)s) LIMIT 5", 
+			{
+				 "course_id": course_id,
+				 "course_name": course_name, 
+				 "course_number": course_number,  
+				 "department": department, 
+				 "cid":session['user']
+			 })
+		searchresults = mycursor.fetchall()
+
+		print(searchresults)
+
+		toRet = {}
+		for x in searchresults:
+			toRet[x[0]] = {"course_name": x[1], "dept": x[2], "course_number": x[3], "semester": x[4], "year": x[5]}
+		return toRet
+
+	return {}
 
 @app.route('/remove-club', methods=['POST'])
 def removeclub():

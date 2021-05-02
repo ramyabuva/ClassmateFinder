@@ -101,22 +101,6 @@ $(document).ready(function(){
 		
 	});
 
-	// xhr2 = $.ajax({
-	//         url: 'friend-requests',
-	//         type: 'GET',        
-	//     });
-	// xhr2.done( () => {
-	// 	populate_requestlist(JSON.parse(xhr2['responseText']));
-	// });
-
-	// xhr3 = $.ajax({
-	//         url: 'requested-friends',
-	//         type: 'GET',        
-	//     });
-	// xhr3.done( () => {
-	// 	populate_requested(JSON.parse(xhr3['responseText']));
-	// });
-
 	document.getElementById("searchclubs").addEventListener('click', () =>{
 		xhr4 = $.ajax({
 	        url: 'search-clubs',

@@ -51,7 +51,11 @@
                 <h4 class="text-primary m-0">Mutual Courses: </h4>
                 <ul class="list-group" id="friendlist" >
                   {%for i in range(0, num_courses)%}
-                    <a href="/course?course_id={{ mutual_courses[i][0] }}"><li class="list-group-item">{{ mutual_courses[i][1] }}{{ mutual_courses[i][2] }} ({{ mutual_courses[i][0] }})</li></a>
+                    <a href="/course?course_id={{ mutual_courses[i][0] }}&semester={{ mutual_courses[i][3] }}&year={{ mutual_courses[i][4] }}"><li class="list-group-item">
+                      {{ mutual_courses[i][1] }}{{ mutual_courses[i][2] }} ({{ mutual_courses[i][0] }})
+                      <br>
+                      {{ mutual_courses[i][3] }} {{ mutual_courses[i][4] }}
+                    </li></a>
                   {%endfor%}
                 </ul>
             </div>

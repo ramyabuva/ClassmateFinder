@@ -35,29 +35,8 @@ table.center {
           <div class="row mb-4 py-2 px-0 px-md-4">
             <div class="col-6 border rounded-lg p-4" id="friends" name="friends">
                 <h4 class="text-primary m-0">Your Courses</h4>
-                <ul class="list-group" >
-                  <li class="list-group-item">
-                    CS 4750: Databases 
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
-                    <p style="color:gray">Semester, Year, Days, Times
-                      <br>
-                    Mutual Friends: </p>
-                  </li>
-                  <!-- Grey out waitlist classes? -->
-                  <li class="list-group-item">
-                    CS 4750: Databases 
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
-                    <p style="color:gray">Semester, Year, Days, Times
-                      <br>
-                    Mutual Friends: </p>
-                  </li>
-                  <li class="list-group-item">
-                    CS 4750: Databases 
-                    <button type="button" class="btn btn-primary float-right" style="background-color:orange;border-color:orange;">Remove Course</button>
-                    <p style="color:gray">Semester, Year, Days, Times
-                      <br>
-                    Mutual Friends: </p>
-                  </li>
+                <ul class="list-group" id="courselist">
+                  
                 </ul>
             </div>
 
@@ -66,34 +45,26 @@ table.center {
                 <form>
                   <div class="form-group">
                     <label for="friend-search">Search</label>
-                    <input type="text" class="form-control" id="friend-search" placeholder="Search by course name">
+                    <input type="text" class="form-control" id="course-id-search" placeholder="Search by course id">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search" placeholder="Search by friend name"> <!-- could be a dropdown-->
+                    <input type="text" class="form-control" id="course-name-search" placeholder="Search by course name">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search" placeholder="Search by semester">
-                    <!-- could be a dropdown-->
+                    <label for="department">Department</label>
+                    <select class="form-control " id="department" name="department">
+                      <option value="" selected ></option>
+                      <option value="APMA" >APMA</option>
+                      <option value="CS">CS</option>
+                    </select>
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="friend-search" placeholder="Search by year"> <!-- could be a dropdown-->
+                    <input type="number" class="form-control" id="number-search" placeholder="Search by number">
                   </div>
-                  <!-- add additional filters-->
                 </form>
-                <ul class="list-group" >
-                  <li class="list-group-item">
-                    CS 2150: Data Structures
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="on-waitlist">
-                      <label class="form-check-label" for="flexCheckChecked">
-                        Waitlist
-                      </label>
-                    </div>
-                    <button type="button" class="btn btn-primary float-right">Add Course</button>
-                    <p style="color:gray">Semester, Year, Days, Times
-                      <br>
-                    Mutual Friends: </p>
-                  </li>
+                <button class="btn btn-primary" id="searchcourses">Search Courses</button>
+                <ul class="list-group" id="course-results">
+                  
                 </ul>
             </div>
           </div>
@@ -111,7 +82,7 @@ table.center {
     <!-- jQuery first, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="static/js/bootstrap.min.js"></script>
-    <script src="static/js/finder.js"></script>
+    <script src="static/js/courses.js"></script>
     <!-- <script>$("#geoparsepy-spinner").hide();</script> -->
 </body>
 </html>
