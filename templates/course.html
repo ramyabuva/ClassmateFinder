@@ -1,0 +1,77 @@
+<!--doctype html-->
+<html lang="en">
+<head>
+  {% include 'page-includes.html' %}
+</head>
+
+<body>
+<div class="container blank-container">
+
+	<header class="website-header">
+     {% include 'header.html' %}
+  </header>
+  
+</div>
+
+<main role="main" class="container blank-container">
+		<div class="jumbotron p-4 bg-light border mx-0 mx-md-4">
+          <div class="col-sm-12 mx-auto">
+            <h3 class="text-primary m-0">{{ course_name }}</h3>
+            <p class="font-ninety-em d-none d-lg-block mt-2 mb-0">
+            </p>
+          </div>
+    	</div>
+    	<div class="container mb-4">
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-12 border rounded-lg p-4" id="friends" name="friends">
+                <h4 class="text-primary m-0">{{ course_code }} ({{ course_id }})</h4>
+                <form>
+                  <div class="form-group">
+                    <label for="gradyear">Semester</label>
+                    <input type="text" class="form-control" id="offered" name="offered" value="{{ offered }}" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="major">Days</label>
+                    <input type="text" class="form-control" id="days" name="days" value="{{ days }}" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="major">Time</label>
+                    <input type="text" class="form-control" id="time" name="time" value="{{ time }}" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="major">Taught By</label>
+                    <input type="text" class="form-control" id="professor" name="professor" value="{{ professor }}" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="major">Location</label>
+                    <input type="text" class="form-control" id="location" name="location" value="{{ location }}" disabled>
+                  </div>
+                </form>
+            </div>
+
+          </div>
+          <div class="row mb-4 py-2 px-0 px-md-4">
+            <div class="col-12 border rounded-lg p-4" id="add-friends" name="add-friends">
+                <h4 class="text-primary m-0">Mutual Clubs: </h4>
+                <ul class="list-group" id="requestlist">
+ 
+                </ul>
+            </div>
+
+          </div>
+
+        </div>
+</main><!-- /.container -->
+
+<footer class="page-footer">
+  {% include 'footer.html' %}
+</footer>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Bootstrap JS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="static/js/bootstrap.min.js"></script>
+<script src="static/js/finder.js"></script>
+
+</body>
+</html>

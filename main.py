@@ -52,6 +52,31 @@ def profile():
 				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
 	return redirect('/')
 
+@app.route('/course', methods=['GET'])
+def course():
+	# TODO: get user information, mutual classes, and mutual clubs
+	if 'user' in session:
+		course_id = request.args.get('course_id')
+		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
+	                              database='rsb4zm', auth_plugin='mysql_native_password')
+		mycursor = cnx.cursor()
+		mycursor.execute("SELECT course_id, dept, course_number, course_name, semester, year, days, time, building_name, room, comp_id, first_name, last_name FROM Course NATURAL JOIN Located_In NATURAL JOIN Classroom NATURAL JOIN Teaches NATURAL JOIN Professor WHERE course_id = %(course_id)s", {"course_id": course_id})
+		myresult = mycursor.fetchall()
+		cnx.close()
+		if len(myresult) > 0:
+			return render_template('course.html', 
+				course_id=myresult[0][0], 
+				course_code=str(myresult[0][1])+str(myresult[0][2]), 
+				course_name= myresult[0][3],
+				offered= str(myresult[0][4]) + " " + str(myresult[0][5]), 
+				days = myresult[0][6],
+				time = myresult[0][7], 
+				location = str(myresult[0][8]) + " - " + str(myresult[0][9]),
+				professor= str(myresult[0][11]) + " " + str(myresult[0][12]) + " (" + str(myresult[0][10]) + ")"
+				)
+	return redirect('/')
+
+
 @app.route('/user', methods=['GET'])
 def user():
 	# TODO: get user information, mutual classes, and mutual clubs
