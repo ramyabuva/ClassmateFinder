@@ -62,10 +62,13 @@ def user():
 		mycursor = cnx.cursor()
 		mycursor.execute("SELECT comp_id, first_name, last_name, graduation_year, major FROM User WHERE comp_id = %(cid)s", {"cid": cid})
 		myresult = mycursor.fetchall()
+		mycursor.execute("SELECT DISTINCT t1.club_name FROM Member_Of as t1, Member_Of as t2 WHERE t1.comp_id=%(cid)s AND t2.comp_id=%(other_cid)s AND t1.club_name = t2.club_name", {"cid": session['user'], "other_cid": cid})
+		mutual_clubs = mycursor.fetchall()
 		cnx.close()
 		if len(myresult) > 0:
 			return render_template('user.html', comp_id = myresult[0][0], 
-				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4])
+				fname = myresult[0][1], lname = myresult[0][2], gradyear = myresult[0][3], major = myresult[0][4], 
+				mutual_clubs = mutual_clubs, num_clubs = len(mutual_clubs))
 	return redirect('/')
 
 @app.route('/search-users', methods=['POST'])

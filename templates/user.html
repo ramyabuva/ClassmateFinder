@@ -56,7 +56,9 @@
             <div class="col-6 border rounded-lg p-4" id="add-friends" name="add-friends">
                 <h4 class="text-primary m-0">Mutual Clubs: </h4>
                 <ul class="list-group" id="requestlist">
-                 
+                  {%for i in range(0, num_clubs)%}
+                    <li class="list-group-item">{{ mutual_clubs[i][0] }}</li>
+                  {%endfor%}
                 </ul>
             </div>
 
