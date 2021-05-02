@@ -62,7 +62,7 @@ def course():
 		cnx = mysql.connector.connect(host='usersrv01.cs.virginia.edu', user='rsb4zm_c', password=db_users['rsb4zm_c'],
 	                              database='rsb4zm', auth_plugin='mysql_native_password')
 		mycursor = cnx.cursor()
-		mycursor.execute("SELECT course_id, dept, course_number, course_name, semester, year, days, time, building_name, room, comp_id, first_name, last_name FROM Course NATURAL JOIN Located_In NATURAL JOIN Classroom NATURAL JOIN Teaches NATURAL JOIN Professor WHERE course_id = %(course_id)s", {"course_id": course_id})
+		mycursor.execute("SELECT course_id, dept, course_number, course_name, semester, year, days, time, building_name, room, comp_id, first_name, last_name FROM Course NATURAL LEFT JOIN Located_In NATURAL LEFT JOIN Classroom NATURAL LEFT JOIN Teaches NATURAL LEFT JOIN Professor WHERE course_id = %(course_id)s", {"course_id": course_id})
 		myresult = mycursor.fetchall()
 		mycursor.execute("SELECT comp_id, first_name, last_name FROM (SELECT comp_id FROM Is_Taking WHERE course_id=%(course_id)s  AND semester=%(semester)s AND year=%(year)s AND comp_id IN (SELECT t1.comp_id_friend as comp_id FROM Friends_With as t1 CROSS JOIN Friends_With as t2 WHERE t1.comp_id_user = t2.comp_id_friend AND t1.comp_id_friend = t2.comp_id_user AND t1.comp_id_user = %(cid)s))as T NATURAL JOIN User", 
 			{
@@ -72,6 +72,11 @@ def course():
 			"year": year
 			})
 		mutual_friends = mycursor.fetchall()
+		professor = ""
+		if myresult[0][10] is None:
+			professor = None
+		else: 
+			professor = str(myresult[0][11]) + " " + str(myresult[0][12]) + " (" + str(myresult[0][10]) + ")"
 		cnx.close()
 		if len(myresult) > 0:
 			return render_template('course.html', 
@@ -82,7 +87,7 @@ def course():
 				days = myresult[0][6],
 				time = myresult[0][7], 
 				location = str(myresult[0][8]) + " - " + str(myresult[0][9]),
-				professor= str(myresult[0][11]) + " " + str(myresult[0][12]) + " (" + str(myresult[0][10]) + ")",
+				professor= professor,
 				mutual_friends = mutual_friends,
 				num_mutuals = len(mutual_friends)
 				)
